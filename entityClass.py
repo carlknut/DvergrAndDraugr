@@ -1,4 +1,5 @@
 from diceRoll import diceRoll
+from weaponClass import Weapon
 
 def stat_mod(stat):
     mod = (stat - 10) // 2
@@ -34,6 +35,7 @@ class Entity():
     }
     inventory_list = []
     conditions_dict = {}     # "Poison" : [False]   
+    action_list = [ 'Main Hand', 'Main Hand', 'Off-Hand' ]
 
     def __init__( self, 
         name = "",
@@ -47,7 +49,9 @@ class Entity():
         initiative = int(), 
         stats = stats_dict, 
         equipment = equipment_dict,
-        inventory = inventory_list
+        inventory = inventory_list,
+        actions = action_list,
+        advantage_disadvantage = [False,False]    # first index is advantage, second index is disadvantage
     ):
         self.name = name
         self.race = race
@@ -61,8 +65,18 @@ class Entity():
         self.stats = stats
         self.equipment = equipment
         self.inventory = inventory
+        self.actions = actions
+        self.advantage_disadvantage = advantage_disadvantage
 
-    def weapon_attack(self,weapon,advantage,disadvantage,entity):
+        if self.name == '':
+            self.name = self.race
+
+
+    def weapon_attack(self,
+                      advantage,
+                      disadvantage,
+                      entity,
+                      weapon = Weapon()):
         
         if advantage == disadvantage:
             roll = diceRoll(1,20)
@@ -70,7 +84,7 @@ class Entity():
             roll = max(diceRoll(1,20),diceRoll(1,20))
         elif disadvantage:
             roll = min(diceRoll(1,20),diceRoll(1,20))
-
+        print(roll)
         if roll == 20:
             print("CRITICAL HIT!")
             damage = diceRoll(weapon.dice[0],weapon.dice[1]) + diceRoll(weapon.dice[0],weapon.dice[1]) + stat_mod(self.stats[weapon.stat])
@@ -102,9 +116,15 @@ class Entity():
         else:
             self.health["Current HP"] -= damage
 
+    def get_health(self):
+        return self.health["Current HP"]
 
     def __str__(self):
-        name_race_str = f"\n{self.name} the {self.race}:\n"
+
+        if self.name == self.race:
+            name_race_str = f"\n{self.name}:"
+        else:
+            name_race_str = f"\n{self.name} the {self.race}:\n"
         role_level_str = f"Level {self.level} {self.role}\n"
         health_str = f"Temp HP: {self.health["Temp HP"]} | Current HP: {self.health["Current HP"]} | Max HP: {self.health["Max HP"]}\n"
         armor_speed_initiative_str = f"Armor: {self.armor} | Speed {self.speed} | Initiative: {self.initiative}\n"
