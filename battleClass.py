@@ -48,29 +48,36 @@ class Battle():
         for number in range(len(entity.actions)):
             n = 1
             action_choice_range = [str(n)]
+            # Printing Action options:
             for action in temp_actions: 
                 print(f"    {n}: {action}")
                 n += 1
                 action_choice_range.append(str(n))
             print(f"    {n}: Pass Turn\n")
-
+            
+            # Request inout until option chosen:
             action_choice = input("Choose Action: ")
             while action_choice not in action_choice_range:
                 print(f"Select 1 - {len(temp_actions)+1}!")
                 action_choice = input("Choose Action: ")
                 
-            action_choice = int(action_choice)
-            if action_choice == ( len(temp_actions) + 1 ):
+            action_choice = int(action_choice) - 1         # sets to index value
+            
+            # exits turn function if chose pass turn
+            if action_choice == ( len(temp_actions) + 2 ):
                 print(f"{entity.name} passed turn!")
                 return
-            if entity.equipment[str(action)] != ( None or "Shield" ) :
-                target_name = input("Choose Target: ")
-                for entity in self.entity_order:
-                    if entity.name == target_name:
-                        target = entity
-                entity.weapon_attack(
-                                     entity.advantage_disadvantage[0],
-                                     entity.advantage_disadvantage[1],
-                                     target,
-                                     entity.equipment[str(action)]
-                                    )
+
+            if action_choice == ( temp_actions.index("Main Hand") or temp_actions.index("Off-Hand") ):
+                action = temp_actions[action_choice]
+                if entity.equipment[str(action)] != ( None or "Shield" ) :
+                    target_name = input("Choose Target: ")
+                    for entity in self.entity_order:
+                        if entity.name == target_name:
+                            target = entity
+                    entity.weapon_attack(
+                                         entity.advantage_disadvantage[0],
+                                         entity.advantage_disadvantage[1],
+                                         target,
+                                         entity.equipment[str(action)]
+                                        )
