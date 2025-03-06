@@ -1,5 +1,6 @@
 from entityClass import Entity
 from weapons import *
+import copy
 
 Thorkin = Entity(
     name = "Thorkin",
@@ -11,15 +12,15 @@ Thorkin = Entity(
     initiative = 3,
     stats = {
         "Styrkr" : 18,
-        "Fimr" : 0,
+        "Fimr" : 16,
         "Megin" : 0,
         "Fjölkyngr" : 0,
         "Seiðr" : 0,
         "Galdr" : 0 
     },
     equipment = {
-        "Main Hand" : bronzeGreatAxe,
-        "Off-Hand" : None,
+        "Main Hand" : copy.deepcopy(bronzeSpear),
+        "Off-Hand" : copy.deepcopy(shield),
         "Head" : None,
         "Body" : None,
         "Legs" : None,
@@ -76,8 +77,8 @@ Balkor = Entity(
         "Galdr" : 0 
     },
     equipment = {
-        "Main Hand" : bronzeAxe,
-        "Off-Hand" : shield,
+        "Main Hand" : copy.deepcopy(bronzeAxe),
+        "Off-Hand" : copy.deepcopy(shield),
         "Head" : None,
         "Body" : None,
         "Legs" : None,

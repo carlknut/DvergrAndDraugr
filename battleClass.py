@@ -2,6 +2,7 @@ from diceRoll import diceRoll
 from entityClass import Entity
 from weaponClass import Weapon
 import copy
+from random import randint
 
 class Battle():
     def __init__(self,
@@ -19,12 +20,20 @@ class Battle():
         self.roll_initiative()
         self.initiative() 
 
+    def dice_roll_for_initiative(self,entity,number,d):
+        roll = 0
+        for die in range(number):
+            roll += randint(1,d)
+        print(f"{entity.name} rolled {number}d{d} for {roll}")
+        return roll
+
+
     def roll_initiative(self):
         
         initiative_rolls = []
         for entity in self.entities_in_initiative:
-            initiative_roll = entity.initiative + diceRoll(1,20)
-            print(f"    {entity.name} got a {initiative_roll} for initiative")
+            initiative_roll = entity.initiative + self.dice_roll_for_initiative(entity,1,20)
+            input(f"...and got a {initiative_roll} for initiative.")
             
             initiative_rolls.append( (entity, initiative_roll, entity.initiative, entity.stats["Fimr"] ) )
         
@@ -35,8 +44,8 @@ class Battle():
             self.entity_order.append(entity[0])
         initiative_string = '\nInitiative order: '
         for entity in self.entity_order:
-            initiative_string += f"{entity.name}, "
-        print(initiative_string)
+            initiative_string += f"| {entity.name} |"
+        input(initiative_string)
         self.in_initiative = True
         
     def initiative(self):
@@ -96,9 +105,9 @@ class Battle():
                                 entity.advantage_disadvantage[0],
                                 entity.advantage_disadvantage[1]                                    
                             )
-                            input("\nAny key to continue...")
+                            input("\nEnter to continue...")
                         else:
-                            input("Choose a valid target...Any key to contiue...")
+                            input("Choose a valid target...Enter to contiue...")
 
                     if choice == 1:
                         temp_action_dict["Attack Actions"]['Main Hand Attack'] -= 1

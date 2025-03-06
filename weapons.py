@@ -44,7 +44,14 @@ bronzeSword = Weapon(
 )
 
 bronzeSpear = Weapon(
-    
+    name = '',
+    type = 'spear',
+    rank = 0,
+    range = 2,
+    dice = (1,6),
+    stat = "Fimr",
+    attacks = 2,
+    hands = 2
 )
 
 bronzeGreatAxe = Weapon(

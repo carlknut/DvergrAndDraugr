@@ -11,7 +11,14 @@ in_initiative = False
 
 def main():
     
-    Battle(entities_in_initiative=[Thorkin,Balkor])
+    entities_in_initiative=[Thorkin,Balkor]
+
+    #print(Thorkin)
+    Thorkin.unequip('Off-Hand')
+    #print(Thorkin)
+
+    Battle(entities_in_initiative)
 
 if __name__ == "__main__":
+    
     main()

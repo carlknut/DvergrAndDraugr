@@ -1,5 +1,6 @@
 from diceRoll import diceRoll
 from weaponClass import Weapon
+from weapons import *
 
 def stat_mod(stat):
     mod = (stat - 10) // 2
@@ -113,11 +114,11 @@ class Entity():
 
 
     def weapon_attack(self,
-                      entity,
-                      weapon = Weapon(),
-                      advantage = False,
-                      disadvantage = False
-                      ):
+        entity,
+        weapon = Weapon(),
+        advantage = False,
+        disadvantage = False
+    ):
         print()
         if advantage == disadvantage:
             roll = diceRoll(1,20)
@@ -133,7 +134,9 @@ class Entity():
             print()
         else:
             attack_roll = roll + stat_mod(self.stats[weapon.stat])
+            input(f"...that's {attack_roll} to hit.")
             if attack_roll >= entity.armor:
+                print("HITS!")
                 damage = diceRoll(weapon.dice[0],weapon.dice[1]) + stat_mod(self.stats[weapon.stat])
                 self.do_damage(damage,[entity])
             else:
@@ -165,13 +168,21 @@ class Entity():
     def update_weapon_attack_actions(self):
         if self.equipment['Main Hand'] != None:
             self.action_dict["Attack Actions"]['Main Hand Attack'] = self.equipment['Main Hand'].attacks
-            if self.equipment['Main Hand'].hands == 2:
+            if self.equipment['Main Hand'].hands == 2 and self.equipment['Main Hand'].type != 'spear':
                 self.equipment['Off-Hand'] = None
+        else:
+            self.action_dict["Attack Actions"]['Main Hand Attack'] = fist
 
         if self.equipment['Off-Hand'] != None:
             self.action_dict['Attack Actions']['Off-Hand Attack'] = self.equipment['Off-Hand'].attacks
         else:
             self.action_dict['Attack Actions']['Off-Hand Attack'] = 0
+
+    def update_weapon_dice(self):
+        if self.equipment['Main Hand'].type == 'spear' and self.equipment['Off-hand'] == None:
+            self.equipment['Main Hand'].dice = (bronzeSpear[0]*2,bronzeSpear[1])
+        elif self.equipment['Main Hand'].type == 'spear' and self.equipment['Off-hand'] != None:
+            self.equipment['Main Hand'].dice = bronzeSpear.dice
     
 
     def equip(self,slot,equipment):
@@ -179,6 +190,10 @@ class Entity():
             print("Shield can only go in Off-Hand slot.")
         else:
             self.equipment[slot] = equipment
+        self.update_weapon_attack_actions()
+
+    def unequip(self,slot):
+        self.equipment[slot] = None
         self.update_weapon_attack_actions()
 
 
@@ -199,11 +214,14 @@ class Entity():
         eitr_str = f"Eitr: {self.eitr[0]} / {self.eitr[1]}\n"
 
         equipment_str = "Equipment:\n"
+        print(type(self.equipment['Main Hand']))
         for slot in self.equipment:
             if slot == "Rings" and self.equipment[slot] == []:
                 equipment_str += str( "    " + str(slot) + ": " + str(None) + "\n")
+            elif self.equipment[slot] == None:
+                equipment_str += str( "    " + str(slot) + ": " + str(None) + "\n")
             else:
-                equipment_str += str( "    " + str(slot) + ": " + str(self.equipment[slot]) + "\n")
+                equipment_str += str( "    " + str(slot) + ": " + str(self.equipment[slot].name) + "\n")
         
         inventory_str = "Inventory:\n"
         if self.inventory == []:
