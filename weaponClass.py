@@ -12,6 +12,8 @@ class Weapon():
                  stat = str(),  # 
                  rank = 0,
                  range = 1,
+                 attacks = 1,
+                 hands = 1
                 ):
         self.name = name
         self.type = type
@@ -19,12 +21,22 @@ class Weapon():
         self.stat = stat
         self.rank = rank
         self.range = range
+        self.attacks = attacks
+        self.hands = hands
 
         if name == '':
             if self.type in melee_types:
-                self.name = str( melee_rank[self.rank] + self.type )
+                self.name = str(melee_rank[self.rank]).capitalize() + ' ' + self.type.capitalize()
             elif self.type in bow_types:
                 self.name = str( bow_rank[self.rank] + self.type )
+
+    def upgrade_weapon(self):
+        self.rank +=1
+        if self.type in melee_types:
+            new_name = str( melee_rank[self.rank]).capitalize() + ' ' + self.type.capitalize()
+        if self.type in bow_types:
+            new_name = str( bow_rank[self.rank] + self.type )
+        self.set_name(new_name)
 
     def set_name(self, new_name):
         print(f"{self.name} renamed to {new_name}.")
